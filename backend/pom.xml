@@ -272,17 +272,6 @@
         </dependency>
 
 
-        <!-- Mysql驱动包 -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-        </dependency>
-
         <!-- 新增的flyway依赖 -->
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -333,5 +322,33 @@
 
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>mysql</id>
+            <dependencies>
+                <!-- Mysql驱动包 -->
+                <dependency>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>sqlite</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <!-- sqlite驱动包 -->
+                <dependency>
+                    <groupId>org.xerial</groupId>
+                    <artifactId>sqlite-jdbc</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+    </profiles>
 
 </project>
