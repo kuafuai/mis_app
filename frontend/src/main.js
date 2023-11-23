@@ -43,6 +43,13 @@ import TreeSelect from '@/components/TreeSelect'
 // 字典标签组件
 import DictTag from '@/components/DictTag'
 
+window.addEventListener('message', function(event) {
+    if (event.data === 'reload') {
+      console.log('刷新')
+      location.reload(true);
+    }
+});
+
 const app = createApp(App)
 
 // 全局方法挂载
