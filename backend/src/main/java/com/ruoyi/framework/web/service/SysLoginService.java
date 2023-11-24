@@ -3,9 +3,9 @@ package com.ruoyi.framework.web.service;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.UserConstants;
+import com.ruoyi.common.core.cache.Cache;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.exception.user.*;
 import com.ruoyi.common.utils.DateUtils;
@@ -40,7 +40,7 @@ public class SysLoginService {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private RedisCache redisCache;
+    private Cache cache;
 
     @Autowired
     private ISysUserService userService;
@@ -99,8 +99,8 @@ public class SysLoginService {
         boolean captchaEnabled = configService.selectCaptchaEnabled();
         if (captchaEnabled) {
             String verifyKey = CacheConstants.CAPTCHA_CODE_KEY + StringUtils.nvl(uuid, "");
-            String captcha = redisCache.getCacheObject(verifyKey);
-            redisCache.deleteObject(verifyKey);
+            String captcha = cache.getCacheObject(verifyKey);
+            cache.deleteObject(verifyKey);
             if (captcha == null) {
                 AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.expire")));
                 throw new CaptchaExpireException();

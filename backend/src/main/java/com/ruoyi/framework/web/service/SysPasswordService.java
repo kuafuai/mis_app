@@ -2,8 +2,8 @@ package com.ruoyi.framework.web.service;
 
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.core.cache.Cache;
 import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.exception.user.UserPasswordNotMatchException;
 import com.ruoyi.common.exception.user.UserPasswordRetryLimitExceedException;
 import com.ruoyi.common.utils.MessageUtils;
@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class SysPasswordService {
     @Autowired
-    private RedisCache redisCache;
+    private Cache cache;
 
     @Value(value = "${user.password.maxRetryCount}")
     private int maxRetryCount;
@@ -49,7 +49,7 @@ public class SysPasswordService {
         String username = usernamePasswordAuthenticationToken.getName();
         String password = usernamePasswordAuthenticationToken.getCredentials().toString();
 
-        Integer retryCount = redisCache.getCacheObject(getCacheKey(username));
+        Integer retryCount = cache.getCacheObject(getCacheKey(username));
 
         if (retryCount == null) {
             retryCount = 0;
@@ -65,7 +65,7 @@ public class SysPasswordService {
             retryCount = retryCount + 1;
             AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL,
                     MessageUtils.message("user.password.retry.limit.count", retryCount)));
-            redisCache.setCacheObject(getCacheKey(username), retryCount, lockTime, TimeUnit.MINUTES);
+            cache.setCacheObject(getCacheKey(username), retryCount, lockTime, TimeUnit.MINUTES);
             throw new UserPasswordNotMatchException();
         } else {
             clearLoginRecordCache(username);
@@ -77,8 +77,8 @@ public class SysPasswordService {
     }
 
     public void clearLoginRecordCache(String loginName) {
-        if (redisCache.hasKey(getCacheKey(loginName))) {
-            redisCache.deleteObject(getCacheKey(loginName));
+        if (cache.hasKey(getCacheKey(loginName))) {
+            cache.deleteObject(getCacheKey(loginName));
         }
     }
 }

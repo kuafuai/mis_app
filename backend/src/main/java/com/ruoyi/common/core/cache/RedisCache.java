@@ -1,12 +1,14 @@
-package com.ruoyi.common.core.redis;
+package com.ruoyi.common.core.cache;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -17,10 +19,15 @@ import java.util.concurrent.TimeUnit;
  **/
 @SuppressWarnings(value = {"unchecked", "rawtypes"})
 @Component
-public class RedisCache {
+@ConditionalOnProperty(name = "cache.type" ,havingValue = "redis")
+public class RedisCache implements Cache{
     @Autowired
     public RedisTemplate redisTemplate;
 
+    @PostConstruct
+    public void init(){
+        System.out.println("==============================redis");
+    }
     /**
      * 缓存基本的对象，Integer、String、实体类等
      *
@@ -145,15 +152,14 @@ public class RedisCache {
      * @param dataSet 缓存的数据
      * @return 缓存数据的对象
      */
-    public <T> BoundSetOperations<String, T> setCacheSet(final String key, final Set<T> dataSet) {
+    public <T> Set<T> setCacheSet(final String key, final Set<T> dataSet) {
         BoundSetOperations<String, T> setOperation = redisTemplate.boundSetOps(key);
         Iterator<T> it = dataSet.iterator();
         while (it.hasNext()) {
             setOperation.add(it.next());
         }
-        return setOperation;
+        return new HashSet<>(dataSet);
     }
-
     /**
      * 获得缓存的set
      *

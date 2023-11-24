@@ -3,9 +3,9 @@ package com.ruoyi.framework.web.service;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.UserConstants;
+import com.ruoyi.common.core.cache.Cache;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.RegisterBody;
-import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.exception.user.CaptchaException;
 import com.ruoyi.common.exception.user.CaptchaExpireException;
 import com.ruoyi.common.utils.MessageUtils;
@@ -32,7 +32,7 @@ public class SysRegisterService {
     private ISysConfigService configService;
 
     @Autowired
-    private RedisCache redisCache;
+    private Cache cache;
 
     /**
      * 注册
@@ -83,8 +83,8 @@ public class SysRegisterService {
      */
     public void validateCaptcha(String username, String code, String uuid) {
         String verifyKey = CacheConstants.CAPTCHA_CODE_KEY + StringUtils.nvl(uuid, "");
-        String captcha = redisCache.getCacheObject(verifyKey);
-        redisCache.deleteObject(verifyKey);
+        String captcha = cache.getCacheObject(verifyKey);
+        cache.deleteObject(verifyKey);
         if (captcha == null) {
             throw new CaptchaExpireException();
         }

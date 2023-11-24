@@ -46,6 +46,11 @@ user:
     # 密码锁定时间（默认10分钟）
     lockTime: 10
 
+cache:
+  #缓存可选择redis还是local
+  type: ${CACHE_TYPE:local}
+
+
 spring:
   # 资源信息
   messages:

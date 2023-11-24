@@ -38,7 +38,7 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService {
      */
     @PostConstruct
     public void init() {
-        //loadingDictCache();
+//        loadingDictCache();
     }
 
     /**
@@ -161,9 +161,9 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService {
     public int insertDictType(SysDictType dict) {
         dict.setCreateTime(DateUtils.getNowDate());
         int row = dictTypeMapper.insertDictType(dict);
-        if (row > 0) {
-            DictUtils.setDictCache(dict.getDictType(), null);
-        }
+//        if (row > 0) {
+            // DictUtils.setDictCache(dict.getDictType(), null);
+//        }
         return row;
     }
 
