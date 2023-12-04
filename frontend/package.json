@@ -4,6 +4,7 @@
   "description": "信息管理系统",
   "author": "KuaFuAI",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build:prod": "vite build",

@@ -3,7 +3,8 @@ import { createApp } from 'vue'
 import Cookies from 'js-cookie'
 
 import ElementPlus from 'element-plus'
-import locale from 'element-plus/lib/locale/lang/zh-cn' // 中文语言
+import 'element-plus/dist/index.css'
+import locale from 'element-plus/es/locale/lang/zh-cn'
 
 import '@/assets/styles/index.scss' // global css
 
@@ -42,13 +43,6 @@ import ImagePreview from "@/components/ImagePreview"
 import TreeSelect from '@/components/TreeSelect'
 // 字典标签组件
 import DictTag from '@/components/DictTag'
-
-window.addEventListener('message', function(event) {
-    if (event.data === 'reload') {
-      console.log('刷新')
-      location.reload(true);
-    }
-});
 
 const app = createApp(App)
 
