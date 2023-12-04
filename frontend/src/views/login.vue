@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
-      <h3 class="title">若依后台管理系统</h3>
+      <h3 class="title">{{ title }}</h3>
       <el-form-item prop="username">
         <el-input
           v-model="loginForm.username"
@@ -86,16 +86,17 @@ const loginForm = ref({
 const loginRules = {
   username: [{ required: true, trigger: "blur", message: "请输入您的账号" }],
   password: [{ required: true, trigger: "blur", message: "请输入您的密码" }],
-  code: [{ required: true, trigger: "change", message: "请输入验证码" }]
+  code: [{ required: false, trigger: "change", message: "请输入验证码" }]
 };
 
 const codeUrl = ref("");
 const loading = ref(false);
 // 验证码开关
-const captchaEnabled = ref(true);
+const captchaEnabled = ref(false);
 // 注册开关
 const register = ref(false);
 const redirect = ref(undefined);
+const title = import.meta.env.VITE_APP_TITLE;
 
 watch(route, (newRoute) => {
     redirect.value = newRoute.query && newRoute.query.redirect;
@@ -138,13 +139,13 @@ function handleLogin() {
 }
 
 function getCode() {
-  getCodeImg().then(res => {
-    captchaEnabled.value = res.captchaEnabled === undefined ? true : res.captchaEnabled;
-    if (captchaEnabled.value) {
+  if (captchaEnabled.value) {
+    getCodeImg().then(res => {
       codeUrl.value = "data:image/gif;base64," + res.img;
       loginForm.value.uuid = res.uuid;
-    }
-  });
+      captchaEnabled.value = res.captchaEnabled === undefined ? true : res.captchaEnabled;
+    });
+  }
 }
 
 function getCookie() {
@@ -160,6 +161,11 @@ function getCookie() {
 
 getCode();
 getCookie();
+
+onMounted(() => {
+  handleLogin()
+})
+
 </script>
 
 <style lang='scss' scoped>
